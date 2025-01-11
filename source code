@@ -1,0 +1,132 @@
+import time
+import sys
+
+# Utility functions for smooth text display
+def slow_print(text, delay=0.05):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(delay)
+    print()
+
+def get_choice(options):
+    choice = None
+    while choice not in options:
+        choice = input(f"Choose ({'/'.join(options)}): ").strip().lower()
+    return choice
+
+# Game modules
+class Character:
+    def __init__(self, name, char_class):
+        self.name = name
+        self.char_class = char_class
+        self.inventory = []
+        self.health = 100
+
+    def add_to_inventory(self, item):
+        self.inventory.append(item)
+
+    def show_inventory(self):
+        if self.inventory:
+            print("Your inventory:")
+            for i, item in enumerate(self.inventory, 1):
+                print(f"{i}. {item}")
+        else:
+            print("Your inventory is empty.")
+
+class Game:
+    def __init__(self):
+        self.character = None
+        self.running = True
+
+    def character_creation(self):
+        slow_print("Welcome to the adventure game!")
+        name = input("What is your name, adventurer? ")
+        slow_print(f"Greetings, {name}!")
+
+        slow_print("Choose your class:")
+        slow_print("1. Warrior: Strong and brave.")
+        slow_print("2. Mage: Wise and powerful.")
+        slow_print("3. Rogue: Sneaky and agile.")
+        class_choice = get_choice(["1", "2", "3"])
+
+        classes = {"1": "Warrior", "2": "Mage", "3": "Rogue"}
+        char_class = classes[class_choice]
+
+        self.character = Character(name, char_class)
+        slow_print(f"You are now a {char_class}! Your journey begins...\n")
+
+    def start_story(self):
+        slow_print("You find yourself in a dark forest. The air is damp, and you hear rustling in the bushes.")
+        slow_print("Do you:")
+        slow_print("1. Investigate the noise?")
+        slow_print("2. Keep walking cautiously?")
+        choice = get_choice(["1", "2"])
+
+        if choice == "1":
+            self.investigate_noise()
+        else:
+            self.keep_walking()
+
+    def investigate_noise(self):
+        slow_print("You approach the bushes carefully and find a small, frightened creature.")
+        slow_print("It hands you a glowing gem and runs away.")
+        self.character.add_to_inventory("Glowing Gem")
+        slow_print("The gem might be useful later. You continue your journey.")
+        self.keep_walking()
+
+    def keep_walking(self):
+        slow_print("You arrive at a fork in the path. One leads to a mountain, the other to a village.")
+        slow_print("Do you:")
+        slow_print("1. Head towards the mountain?")
+        slow_print("2. Go to the village?")
+        choice = get_choice(["1", "2"])
+
+        if choice == "1":
+            self.go_to_mountain()
+        else:
+            self.go_to_village()
+
+    def go_to_mountain(self):
+        slow_print("The mountain path is treacherous, but you find a hidden cave.")
+        slow_print("Inside, you see an ancient chest. Do you open it?")
+        choice = get_choice(["yes", "no"])
+
+        if choice == "yes":
+            slow_print("The chest contains a magical sword! You take it.")
+            self.character.add_to_inventory("Magical Sword")
+        else:
+            slow_print("You decide to leave the chest untouched.")
+
+        slow_print("Your journey in the mountain ends for now.")
+
+    def go_to_village(self):
+        slow_print("The village is bustling with activity. You see a blacksmith and a tavern.")
+        slow_print("Where do you go?")
+        slow_print("1. Blacksmith")
+        slow_print("2. Tavern")
+        choice = get_choice(["1", "2"])
+
+        if choice == "1":
+            slow_print("The blacksmith offers to sharpen your weapon for a fee.")
+            self.character.add_to_inventory("Sharpened Weapon")
+        else:
+            slow_print("The tavern keeper shares rumors of a treasure hidden in the forest.")
+
+        slow_print("Your time in the village ends for now.")
+
+    def play(self):
+        self.character_creation()
+        while self.running:
+            self.start_story()
+            slow_print("Do you want to continue your adventure? (yes/no)")
+            choice = get_choice(["yes", "no"])
+            if choice == "no":
+                self.running = False
+
+        slow_print("Thank you for playing! Your journey ends here.")
+
+# Main game loop
+if __name__ == "__main__":
+    game = Game()
+    game.play()
